@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
 const NavWrapper = styled.nav`
@@ -6,7 +6,7 @@ const NavWrapper = styled.nav`
   top: 0;
   left: 0;
   right: 0;
-  background-color: #090b13;
+  background-color: ${(props) => (props.show ? "#090b13" : "transparent")};
   height: 70px;
   display: flex;
   justify-content: space-between;
@@ -33,8 +33,22 @@ const Logo = styled.a`
 `;
 
 const Nav = () => {
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    window.addEventListener("scroll", () => {
+      if (window.scrollY > 50) {
+        setShow(true);
+      } else {
+        setShow(false);
+      }
+    });
+    return () => {
+      window.removeEventListener("scroll", () => {});
+    };
+  }, []);
   return (
-    <NavWrapper>
+    <NavWrapper show={show}>
       <Logo>
         <img
           src="/images/logo.svg"
