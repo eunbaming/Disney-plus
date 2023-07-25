@@ -1,4 +1,5 @@
 import "./App.css";
+import Banner from "./components/Banner";
 import Nav from "./components/Nav";
 import styled from "styled-components";
 
@@ -25,6 +26,7 @@ function App() {
   return (
     <Container>
       <Nav />
+      <Banner />
     </Container>
   );
 }
