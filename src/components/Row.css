@@ -55,6 +55,7 @@
   margin-right: 10px;
   transition: 450ms;
   border-radius: 4px;
+  cursor: pointer;
 }
 .row_poster:hover {
   transform: scale(1.08);
