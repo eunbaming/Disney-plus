@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 
 const NavWrapper = styled.nav`
   position: fixed;
@@ -65,6 +66,8 @@ const Nav = () => {
   const [searchValue, setSearchValue] = useState("");
   const { pathname } = useLocation(); // 소문자로 쓰기 주의!
   const navigate = useNavigate();
+  const auth = getAuth();
+  const provider = new GoogleAuthProvider();
 
   console.log("pathName", pathname);
 
@@ -89,6 +92,14 @@ const Nav = () => {
     navigate(`/search?q=${e.target.value}`);
   };
 
+  const handleAuth = () => {
+    signInWithPopup(auth, provider)
+      .then((result) => {})
+      .catch((error) => {
+        alert(error.message);
+      });
+  };
+
   return (
     <NavWrapper show={show}>
       <Logo>
@@ -101,7 +112,7 @@ const Nav = () => {
         />
       </Logo>
       {pathname == "/" ? (
-        <Login>Login</Login>
+        <Login onClick={handleAuth}>Login</Login>
       ) : (
         <Input
           value={searchValue}
