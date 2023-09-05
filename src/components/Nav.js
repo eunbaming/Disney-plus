@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import {
+  getAuth,
+  GoogleAuthProvider,
+  onAuthStateChanged,
+  signInWithPopup,
+} from "firebase/auth";
 
 const NavWrapper = styled.nav`
   position: fixed;
@@ -70,6 +75,19 @@ const Nav = () => {
   const provider = new GoogleAuthProvider();
 
   console.log("pathName", pathname);
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      console.log("user: ", user);
+      if (user) {
+        if (pathname == "/") {
+          navigate("/main");
+        }
+      } else {
+        navigate("/");
+      }
+    });
+  }, []);
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
