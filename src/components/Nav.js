@@ -103,9 +103,13 @@ const USerImg = styled.img`
 `;
 
 const Nav = () => {
+  const initialUserData = localStorage.getItem("userData")
+    ? JSON.parse(localStorage.getItem("userData"))
+    : {};
+
   const [show, setShow] = useState(false);
   const [searchValue, setSearchValue] = useState("");
-  const [userData, setUserData] = useState({});
+  const [userData, setUserData] = useState(initialUserData);
 
   const { pathname } = useLocation(); // 소문자로 쓰기 주의!
   const navigate = useNavigate();
@@ -125,7 +129,7 @@ const Nav = () => {
         navigate("/");
       }
     });
-  }, []);
+  }, [auth, navigate, pathname]);
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
@@ -153,6 +157,7 @@ const Nav = () => {
       .then((result) => {
         console.log("result", result);
         setUserData(result.user);
+        localStorage.setItem("usetData", JSON.stringify(result.user));
       })
       .catch((error) => {
         alert(error.message);
