@@ -6,6 +6,7 @@ import {
   GoogleAuthProvider,
   onAuthStateChanged,
   signInWithPopup,
+  signOut,
 } from "firebase/auth";
 
 const NavWrapper = styled.nav`
@@ -66,9 +67,46 @@ const Input = styled.input`
   color: #fff;
 `;
 
+const DropDown = styled.div`
+  position: absolute;
+  top: 48px;
+  right: 0;
+  width: 100%;
+  background: rgb(19, 19, 19);
+  border: 1px solid rgba(151, 151, 151, 0.34);
+  border-radius: 4px;
+  box-shadow: rgb(0 0 0 / 50%) 0 0 18px 0;
+  padding: 10px;
+  font-size: 14px;
+  letter-spacing: 3px;
+  opacity: 0;
+`;
+const SignOut = styled.div`
+  position: relative;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  &:hover {
+    ${DropDown} {
+      opacity: 1;
+      transition-duration: 1s;
+    }
+  }
+`;
+const USerImg = styled.img`
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+`;
+
 const Nav = () => {
   const [show, setShow] = useState(false);
   const [searchValue, setSearchValue] = useState("");
+  const [userData, setUserData] = useState({});
+
   const { pathname } = useLocation(); // 소문자로 쓰기 주의!
   const navigate = useNavigate();
   const auth = getAuth();
@@ -112,9 +150,23 @@ const Nav = () => {
 
   const handleAuth = () => {
     signInWithPopup(auth, provider)
-      .then((result) => {})
+      .then((result) => {
+        console.log("result", result);
+        setUserData(result.user);
+      })
       .catch((error) => {
         alert(error.message);
+      });
+  };
+
+  const handleSignOut = () => {
+    signOut(auth)
+      .then(() => {
+        setUserData({});
+        navigate("/");
+      })
+      .catch((error) => {
+        console.log(error.message);
       });
   };
 
@@ -129,16 +181,26 @@ const Nav = () => {
           }}
         />
       </Logo>
+
       {pathname == "/" ? (
         <Login onClick={handleAuth}>Login</Login>
       ) : (
-        <Input
-          value={searchValue}
-          onChange={handleChange}
-          className="nav_input"
-          type="text"
-          placeholder="검색해주세요."
-        />
+        <>
+          <Input
+            value={searchValue}
+            onChange={handleChange}
+            className="nav_input"
+            type="text"
+            placeholder="검색해주세요."
+          />
+
+          <SignOut>
+            <USerImg src={userData.photoURL} alt={userData.displayName} />
+            <DropDown>
+              <span onClick={handleSignOut}>Sign Out</span>
+            </DropDown>
+          </SignOut>
+        </>
       )}
     </NavWrapper>
   );
